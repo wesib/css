@@ -33,9 +33,7 @@
     "@wesib/wesib": "^1.0.0-beta.43"
   },
   "dependencies": {
-    "@frontmeans/dom-events": "^1.1.0",
     "@frontmeans/dom-primitives": "^1.0.0",
-    "@frontmeans/drek": "^1.1.0",
     "@frontmeans/render-scheduler": "^1.6.0",
     "@proc7ts/amend": "^1.0.0-dev.5",
     "@proc7ts/primitives": "^2.2.0",
