@@ -1,9 +1,11 @@
 import { newNamespaceAliaser } from '@frontmeans/namespace-aliaser';
-import { immediateRenderScheduler } from '@frontmeans/render-scheduler';
+import { immediateRenderScheduler, RenderSchedule, RenderScheduleOptions } from '@frontmeans/render-scheduler';
 import { StypRenderer } from '@frontmeans/style-producer';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ContextRegistry } from '@proc7ts/context-values';
 import { noop } from '@proc7ts/primitives';
 import { ComponentContext, ComponentRenderScheduler, DefaultNamespaceAliaser } from '@wesib/wesib';
+import { Mock } from 'jest-mock';
 import { componentStypDomFormatConfig } from './component-styp-dom.format-config';
 import { ComponentStypFormat } from './component-styp-format';
 
@@ -11,7 +13,7 @@ describe('componentStypDomFormatConfig', () => {
 
   let context: ComponentContext;
   let format: ComponentStypFormat;
-  let scheduler: jest.Mock;
+  let scheduler: Mock<RenderSchedule, [RenderScheduleOptions?]>;
 
   beforeEach(() => {
 

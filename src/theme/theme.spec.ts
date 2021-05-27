@@ -1,4 +1,5 @@
 import { RefStypRule, StypLength, StypRule, StypRuleList, StypRuleRef } from '@frontmeans/style-producer';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ContextRegistry } from '@proc7ts/context-values';
 import { onceAfter } from '@proc7ts/fun-events';
 import { Class } from '@proc7ts/primitives';
