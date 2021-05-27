@@ -1,5 +1,6 @@
 import { immediateRenderScheduler } from '@frontmeans/render-scheduler';
 import { StypProperties, StypRenderer, stypRoot, StypRules, stypSelectorText } from '@frontmeans/style-producer';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { trackValue } from '@proc7ts/fun-events';
 import {
   Component,
@@ -10,6 +11,7 @@ import {
   ShadowContentRoot,
 } from '@wesib/wesib';
 import { testDefinition } from '@wesib/wesib/testing';
+import { SpyInstance } from 'jest-mock';
 import { ComponentStypDomFormat } from './component-styp-dom.format';
 import { ComponentStypFormat, ComponentStypFormatConfig } from './component-styp-format';
 import { ComponentStypRenderer } from './component-styp-renderer';
@@ -63,7 +65,9 @@ describe('@ProduceStyle', () => {
   });
   it('renders styles using DOM format', async () => {
 
-    let produceSpy!: jest.SpyInstance;
+    let produceSpy!: SpyInstance<
+        ReturnType<ComponentStypFormat['produce']>,
+        Parameters<ComponentStypFormat['produce']>>;
 
     await mount(
         stypRoot({ display: 'block' }).rules,
@@ -89,7 +93,9 @@ describe('@ProduceStyle', () => {
   });
   it('(when: connected) renders styles using DOM format', async () => {
 
-    let produceSpy!: jest.SpyInstance;
+    let produceSpy!: SpyInstance<
+        ReturnType<ComponentStypDomFormat['produce']>,
+        Parameters<ComponentStypDomFormat['produce']>>;
 
     await mount(
         stypRoot({ display: 'block' }).rules,

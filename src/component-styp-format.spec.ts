@@ -14,6 +14,7 @@ import {
   StypSelector,
   stypSelector,
 } from '@frontmeans/style-producer';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ContextRegistry } from '@proc7ts/context-values';
 import { trackValue } from '@proc7ts/fun-events';
 import { Supply } from '@proc7ts/supply';
@@ -24,11 +25,12 @@ import {
   DefaultNamespaceAliaser,
   ShadowContentRoot,
 } from '@wesib/wesib';
+import { MockObject } from '@wesib/wesib/testing';
+import { Mock } from 'jest-mock';
 import { ComponentStyleProducer } from './component-style-producer';
 import { ComponentStypDomFormat } from './component-styp-dom.format';
 import { ComponentStypFormatConfig } from './component-styp-format';
 import { ElementIdClass, ElementIdClass__NS } from './element-id-class.impl';
-import Mock = jest.Mock;
 
 describe('ComponentStypDomFormat', () => {
 
@@ -42,7 +44,7 @@ describe('ComponentStypDomFormat', () => {
   });
 
   let registry: ContextRegistry<ComponentContext>;
-  let context: jest.Mocked<ComponentContext>;
+  let context: MockObject<ComponentContext>;
 
   beforeEach(() => {
     registry = new ContextRegistry();
@@ -136,7 +138,7 @@ describe('ComponentStypDomFormat', () => {
 
         const parent = document.createElement('content-parent');
 
-        expect(format.config({ parent })).toMatchObject(parent);
+        expect(format.config({ parent })).toMatchObject(parent as any);
       });
     });
 
