@@ -25,12 +25,12 @@ import {
   DefaultNamespaceAliaser,
   ShadowContentRoot,
 } from '@wesib/wesib';
-import { MockObject } from '@wesib/wesib/testing';
 import { Mock } from 'jest-mock';
 import { ComponentStyleProducer } from './component-style-producer';
 import { ComponentStypDomFormat } from './component-styp-dom.format';
 import { ComponentStypFormatConfig } from './component-styp-format';
 import { ElementIdClass, ElementIdClass__NS } from './element-id-class.impl';
+import { MockObject } from './spec';
 
 describe('ComponentStypDomFormat', () => {
 
