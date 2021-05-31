@@ -1,3 +1,4 @@
+import { doqryPicker, DoqryPicker, DoqryPurePicker, DoqryPureSelector, DoqrySubPicker } from '@frontmeans/doqry';
 import { NamespaceAliaser } from '@frontmeans/namespace-aliaser';
 import { RenderScheduler } from '@frontmeans/render-scheduler';
 import {
@@ -6,12 +7,8 @@ import {
   StypFormatConfig,
   stypObjectFormat,
   StypObjectFormatConfig,
-  StypPureSelector,
   StypRenderer,
   StypRules,
-  StypSelector,
-  stypSelector,
-  StypSubSelector,
 } from '@frontmeans/style-producer';
 import { ContextKey, ContextKey__symbol, SingleContextKey } from '@proc7ts/context-values';
 import { elementOrArray, extendSetOfElements, setOfElements, valueProvider } from '@proc7ts/primitives';
@@ -54,7 +51,7 @@ export interface ComponentStypFormatConfig extends StypFormatConfig {
    *
    * This selector should not contain a `:host` sub-selector.
    */
-  readonly hostSelector?: StypPureSelector.Part | string;
+  readonly hostSelector?: DoqryPureSelector.Part | string;
 
   /**
    * Root CSS selector is never used for custom elements. A `hostSelector` is applied instead.
@@ -203,7 +200,7 @@ export abstract class ComponentStypFormat {
     );
 
     const hostSelector = config.hostSelector
-        ? stypSelector(config.hostSelector)[0] as StypPureSelector.NormalizedPart
+        ? doqryPicker(config.hostSelector)[0] as DoqryPurePicker.Part
         : undefined;
 
     renderers.add(shadowRoot
@@ -219,7 +216,7 @@ export abstract class ComponentStypFormat {
 /**
  * @internal
  */
-function shadowRenderer(hostSelector: StypPureSelector.NormalizedPart | undefined): StypRenderer {
+function shadowRenderer(hostSelector: DoqryPurePicker.Part | undefined): StypRenderer {
   return {
     order: -100,
     render(producer, properties) {
@@ -249,7 +246,7 @@ function shadowRenderer(hostSelector: StypPureSelector.NormalizedPart | undefine
 /**
  * @internal
  */
-function noShadowRenderer(hostSelector: StypPureSelector.NormalizedPart): StypRenderer {
+function noShadowRenderer(hostSelector: DoqryPurePicker.Part): StypRenderer {
   return {
     order: -100,
     render(producer, properties) {
@@ -278,8 +275,8 @@ function noShadowRenderer(hostSelector: StypPureSelector.NormalizedPart): StypRe
  * @internal
  */
 function extractHostSelector(
-    selector: StypSelector.Normalized,
-): [StypSelector.Normalized, StypSelector.Normalized?] {
+    selector: DoqryPicker,
+): [DoqryPicker, DoqryPicker?] {
   if (typeof selector[0] !== 'string') {
 
     const [{ ns, e, i, c, u, s, $ }, ...restParts] = selector;
@@ -290,10 +287,10 @@ function extractHostSelector(
 
       if (prefix === ':' && name === 'host') {
 
-        let host: StypSelector.Mutable;
+        let host: DoqryPicker.Mutable;
 
         if (params.length) {
-          host = (params[0] as StypSubSelector.NormalizedParameter).slice();
+          host = (params[0] as DoqrySubPicker.Parameter).slice();
           (host[0] as { $?: string | readonly string[] }).$ = $;
         } else {
           host = $ ? [{ $ }] : [];
@@ -310,7 +307,7 @@ function extractHostSelector(
  * @internal
  */
 function extendHostSelector(
-    selector: StypSelector.Normalized,
+    selector: DoqryPicker,
     {
       ns,
       e,
@@ -318,10 +315,10 @@ function extendHostSelector(
       c,
       u,
       s,
-    }: StypPureSelector.NormalizedPart,
-): StypSelector.Normalized {
+    }: DoqryPurePicker.Part,
+): DoqryPicker {
 
-  const [first, ...rest] = selector as [StypSelector.NormalizedPart, ...StypSelector.Normalized];
+  const [first, ...rest] = selector as [DoqryPicker.Part, ...DoqryPicker];
 
   return [
     {

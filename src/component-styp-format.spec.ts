@@ -1,4 +1,5 @@
 import { nodeDocument } from '@frontmeans/dom-primitives';
+import { doqryPicker, DoqryPicker, DoqrySelector } from '@frontmeans/doqry';
 import { newNamespaceAliaser } from '@frontmeans/namespace-aliaser';
 import {
   immediateRenderScheduler,
@@ -6,14 +7,7 @@ import {
   RenderSchedule,
   RenderScheduler,
 } from '@frontmeans/render-scheduler';
-import {
-  produceBasicStyle,
-  StypFormatConfig,
-  StypRenderer,
-  stypRoot,
-  StypSelector,
-  stypSelector,
-} from '@frontmeans/style-producer';
+import { produceBasicStyle, StypFormatConfig, StypRenderer, stypRoot } from '@frontmeans/style-producer';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ContextRegistry } from '@proc7ts/context-values';
 import { trackValue } from '@proc7ts/fun-events';
@@ -92,7 +86,7 @@ describe('ComponentStypDomFormat', () => {
   });
 
   let mockRenderer: Mock<void, Parameters<StypRenderer.Function>>;
-  let renderedSelector: StypSelector.Normalized;
+  let renderedSelector: DoqryPicker;
 
   beforeEach(() => {
     renderedSelector = undefined!;
@@ -253,7 +247,7 @@ describe('ComponentStypDomFormat', () => {
         const hostSelector = { e: 'host-element', c: 'some' };
 
         produce([], { hostSelector });
-        expect(renderedSelector).toEqual(stypSelector(hostSelector));
+        expect(renderedSelector).toEqual(doqryPicker(hostSelector));
       });
       it('replaces `:host` with host selector', () => {
         produce({ u: [':', 'host'] });
@@ -340,7 +334,7 @@ describe('ComponentStypDomFormat', () => {
       });
     });
 
-    function produce(selector: StypSelector, config?: ComponentStypFormatConfig): void {
+    function produce(selector: DoqrySelector, config?: ComponentStypFormatConfig): void {
 
       const { rules } = stypRoot();
       const rule = rules.add(selector);
