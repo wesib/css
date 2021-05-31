@@ -1,5 +1,6 @@
+import { doqryText } from '@frontmeans/doqry';
 import { immediateRenderScheduler } from '@frontmeans/render-scheduler';
-import { StypProperties, StypRenderer, stypRoot, StypRules, stypSelectorText } from '@frontmeans/style-producer';
+import { StypProperties, StypRenderer, stypRoot, StypRules } from '@frontmeans/style-producer';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { trackValue } from '@proc7ts/fun-events';
 import {
@@ -153,14 +154,14 @@ describe('@ProduceStyle', () => {
     const rule = cssStyleRule();
     const idClass = context.get(ElementIdClass);
 
-    expect(rule.selectorText).toBe(stypSelectorText({ c: idClass }));
+    expect(rule.selectorText).toBe(doqryText({ c: idClass }));
   });
   it('prepends element id class to CSS rule selector of anonymous component', async () => {
 
     const context = await mount(undefined, {});
     const rule = cssStyleRule();
     const idClass = context.get(ElementIdClass);
-    const selector = stypSelectorText({ c: idClass });
+    const selector = doqryText({ c: idClass });
 
     expect(rule.selectorText).toBe(selector);
     expect(selector).toMatch(/^\.component\\#\d+\\@/);

@@ -22,13 +22,14 @@
   "types": "./index.d.ts",
   "exports": "./dist/wesib.css.js",
   "peerDependencies": {
-    "@frontmeans/style-producer": "^6.2.0",
+    "@frontmeans/style-producer": "^7.0.0",
     "@proc7ts/context-values": "^6.2.0",
     "@proc7ts/fun-events": "^10.5.0",
     "@wesib/wesib": "^1.0.0-beta.44"
   },
   "dependencies": {
     "@frontmeans/dom-primitives": "^1.1.0",
+    "@frontmeans/doqry": "^1.0.0",
     "@frontmeans/namespace-aliaser": "^2.5.0",
     "@frontmeans/render-scheduler": "^1.7.0",
     "@proc7ts/amend": "^1.0.0",
@@ -38,7 +39,7 @@
   },
   "devDependencies": {
     "@frontmeans/render-scheduler": "^1.5.0",
-    "@frontmeans/style-producer": "^6.2.0",
+    "@frontmeans/style-producer": "^7.0.0",
     "@jest/globals": "^27.0.3",
     "@proc7ts/context-values": "^6.2.0",
     "@proc7ts/fun-events": "^10.5.0",
