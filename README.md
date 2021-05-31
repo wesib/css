@@ -8,6 +8,15 @@ Wesib: CSS Producer
 [![GitHub Project][github-image]][github-url]
 [![API Documentation][api-docs-image]][api-docs-url]
 
+This module uses a [Style Producer] for producing component styles.
+
+A `@ProduceStyle()`-decorated property or method produces a style sheet for the component.
+
+The produces styles are applicable to both shadow DOM, and to component without one.
+
+A `Theme` instance available in bootstrap, definition, or component context can be used to produce styles with respect
+to configured theme.
+
 [npm-image]: https://img.shields.io/npm/v/@wesib/css.svg?logo=npm
 [npm-url]: https://www.npmjs.com/package/@wesib/css
 [build-status-img]: https://github.com/wesib/css/workflows/Build/badge.svg
@@ -20,3 +29,4 @@ Wesib: CSS Producer
 [github-url]: https://github.com/wesib/css
 [api-docs-image]: https://img.shields.io/static/v1?logo=typescript&label=API&message=docs&color=informational
 [api-docs-url]: https://wesib.github.io/css/ 
+[Style Producer]: https://www.npmjs.com/package/@frontmeans/style-producer
