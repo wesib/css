@@ -6,7 +6,6 @@ Wesib: CSS Producer
 [![GitHub Project][github-image]][github-url]
 [![API Documentation][api-docs-image]][api-docs-url]
 
-[Wesib]: https://github.com/wesib/wesib
 [npm-image]: https://img.shields.io/npm/v/@wesib/css.svg?logo=npm
 [npm-url]: https://www.npmjs.com/package/@wesib/css
 [build-status-img]: https://github.com/wesib/css/workflows/Build/badge.svg
