@@ -370,4 +370,3 @@ export class ComponentStypObjectFormat extends ComponentStypFormat {
   }
 
 }
-
