@@ -2,12 +2,14 @@ import { produceStyle } from '@frontmeans/style-producer';
 import { FeatureDef, FeatureDef__symbol } from '@wesib/wesib';
 import { ComponentStyleProducer } from './component-style-producer';
 
-/**
- * @internal
- */
 const StyleProducerSupport__feature: FeatureDef = {
   setup(setup) {
-    setup.provide({ a: ComponentStyleProducer, is: produceStyle });
+    setup.provide({
+      entry: ComponentStyleProducer,
+      placeAsset(_target, collector) {
+        collector(produceStyle);
+      },
+    });
   },
 };
 

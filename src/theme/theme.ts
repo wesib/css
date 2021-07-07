@@ -7,8 +7,8 @@ import {
   StypRuleRef,
   StypRules,
 } from '@frontmeans/style-producer';
-import { ContextKey, ContextKey__symbol, SingleContextKey } from '@proc7ts/context-values';
-import { bootstrapDefault } from '@wesib/wesib';
+import { cxDefaultScoped, CxEntry, cxSingle } from '@proc7ts/context-values';
+import { BootstrapContext } from '@wesib/wesib';
 import { ThemeStyle } from './theme-style';
 
 export interface ThemeFactory {
@@ -17,14 +17,11 @@ export interface ThemeFactory {
 
 }
 
-/**
- * @internal
- */
-const Theme__key = (/*#__PURE__*/ new SingleContextKey<Theme>(
-    'theme',
-    {
-      byDefault: bootstrapDefault(context => new Theme$(context.get(ThemeStyle))),
-    },
+const Theme$perContext: CxEntry.Definer<Theme> = (/*#__PURE__*/ cxDefaultScoped(
+    BootstrapContext,
+    (/*#__PURE__*/ cxSingle({
+      byDefault: target => new Theme$(target.get(ThemeStyle)),
+    })),
 ));
 
 /**
@@ -37,11 +34,12 @@ const Theme__key = (/*#__PURE__*/ new SingleContextKey<Theme>(
  */
 export abstract class Theme {
 
-  /**
-   * A key of bootstrap, definition, or component context value containing current theme instance.
-   */
-  static get [ContextKey__symbol](): ContextKey<Theme> {
-    return Theme__key;
+  static perContext(target: CxEntry.Target<Theme>): CxEntry.Definition<Theme> {
+    return Theme$perContext(target);
+  }
+
+  static toString(): string {
+    return '[Theme]';
   }
 
   /**
