@@ -9,10 +9,11 @@ import {
 } from '@frontmeans/render-scheduler';
 import { produceBasicStyle, StypFormatConfig, StypRenderer, stypRoot } from '@frontmeans/style-producer';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { ContextRegistry } from '@proc7ts/context-values';
+import { CxBuilder, cxConstAsset } from '@proc7ts/context-builder';
 import { trackValue } from '@proc7ts/fun-events';
 import { Supply } from '@proc7ts/supply';
 import {
+  BootstrapContext,
   ComponentContext,
   ComponentRenderScheduler,
   ComponentState,
@@ -22,9 +23,8 @@ import {
 import { Mock } from 'jest-mock';
 import { ComponentStyleProducer } from './component-style-producer';
 import { ComponentStypDomFormat } from './component-styp-dom.format';
-import { ComponentStypFormatConfig } from './component-styp-format';
+import { ComponentStypFormat, ComponentStypFormatConfig } from './component-styp-format';
 import { ElementIdClass, ElementIdClass__NS } from './element-id-class.impl';
-import { MockObject } from './spec';
 
 describe('ComponentStypDomFormat', () => {
 
@@ -37,52 +37,46 @@ describe('ComponentStypDomFormat', () => {
     done.off();
   });
 
-  let registry: ContextRegistry<ComponentContext>;
-  let context: MockObject<ComponentContext>;
+  let cxBuilder: CxBuilder<ComponentContext>;
+  let context: ComponentContext;
 
   beforeEach(() => {
-    registry = new ContextRegistry();
 
-    const values = registry.newValues();
     const ready = trackValue<ComponentContext>();
 
-    context = {
+    cxBuilder = new CxBuilder((get, { supply }) => ({
       element: document.createElement('test-element'),
-      supply: new Supply(),
+      supply,
       whenReady: ready.read,
       whenSettled: ready.read,
       settled: true,
-      get: values.get,
+      get,
       contentRoot: document.createElement('content-root'),
-    } as any;
-    ready.it = context;
+    } as Partial<ComponentContext> as ComponentContext));
 
-    registry.provide({ a: ComponentContext, is: context });
+    ready.it = context = cxBuilder.context;
+
+    cxBuilder.provide(cxConstAsset(ComponentContext, context));
+    cxBuilder.provide(cxConstAsset(BootstrapContext, context as any));
   });
 
   beforeEach(() => {
-    registry.provide({
-      a: DefaultNamespaceAliaser,
-      is: newNamespaceAliaser(),
-    });
-    registry.provide({
-      a: ComponentState,
-      is: new ComponentState(),
-    });
+    cxBuilder.provide(cxConstAsset(DefaultNamespaceAliaser, newNamespaceAliaser()));
+    cxBuilder.provide(cxConstAsset(ComponentState, new ComponentState()));
   });
 
   let mockRenderScheduler: Mock<RenderSchedule, Parameters<RenderScheduler>>;
 
   beforeEach(() => {
     mockRenderScheduler = jest.fn(immediateRenderScheduler);
-    registry.provide({ a: ComponentRenderScheduler, is: mockRenderScheduler });
+    cxBuilder.provide(cxConstAsset(ComponentRenderScheduler, mockRenderScheduler));
   });
 
   let elementId: ElementIdClass;
 
   beforeEach(() => {
     elementId = ['test-element-id', ElementIdClass__NS];
-    registry.provide({ a: ElementIdClass, is: elementId });
+    cxBuilder.provide(cxConstAsset(ElementIdClass, elementId));
   });
 
   let mockRenderer: Mock<void, Parameters<StypRenderer.Function>>;
@@ -99,10 +93,7 @@ describe('ComponentStypDomFormat', () => {
 
   beforeEach(() => {
     mockProduceStyle = jest.fn(produceBasicStyle);
-    registry.provide({
-      a: ComponentStyleProducer,
-      is: mockProduceStyle,
-    });
+    cxBuilder.provide(cxConstAsset(ComponentStyleProducer, mockProduceStyle));
   });
 
   let format: ComponentStypDomFormat;
@@ -199,6 +190,12 @@ describe('ComponentStypDomFormat', () => {
     }
   });
 
+  describe('toString', () => {
+    it('provides string representation', () => {
+      expect(String(ComponentStypFormat)).toBe('[ComponentStypFormat]');
+    });
+  });
+
   describe('selector modification', () => {
     describe('with shadow DOM', () => {
       beforeEach(() => {
@@ -206,7 +203,7 @@ describe('ComponentStypDomFormat', () => {
         const contentRoot = context.contentRoot as Element;
         const shadowRoot = contentRoot.attachShadow({ mode: 'closed' });
 
-        registry.provide({ a: ShadowContentRoot, is: shadowRoot });
+        cxBuilder.provide(cxConstAsset(ShadowContentRoot, shadowRoot));
       });
 
       it('replaces root selector with `:host` by default', () => {

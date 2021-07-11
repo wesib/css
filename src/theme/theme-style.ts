@@ -1,6 +1,7 @@
 import { stypRules, StypRules } from '@frontmeans/style-producer';
-import { ContextRef, ContextValueSlot, IterativeContextKey } from '@proc7ts/context-values';
-import { itsEach } from '@proc7ts/push-iterator';
+import { cxDefaultScoped, cxDynamic, CxEntry } from '@proc7ts/context-values';
+import { asis } from '@proc7ts/primitives';
+import { BootstrapContext } from '@wesib/wesib';
 import { Theme } from './theme';
 
 /**
@@ -69,84 +70,81 @@ export namespace ThemeStyle {
 }
 
 /**
- * @internal
+ * Context entry containing theme styles.
  */
-class ThemeStyleKey extends IterativeContextKey<ThemeStyle.ById, ThemeStyle> {
+export const ThemeStyle: CxEntry<ThemeStyle.ById, ThemeStyle> = {
+  perContext: (/*#__PURE__*/ cxDefaultScoped(
+      BootstrapContext,
+      (/*#__PURE__*/ cxDynamic<ThemeStyle.ById, ThemeStyle, ThemeStyle.ById>({
+        create: ThemeStyle$create,
+        byDefault: _target => asis,
+        assign: ({ get, to }, _target) => {
 
-  constructor() {
-    super('theme-style');
-  }
+          const byId: ThemeStyle.ById = id => get()(id);
 
-  grow(
-      slot: ContextValueSlot<ThemeStyle.ById, ThemeStyle, Iterable<ThemeStyle>>,
-  ): void {
-
-    const providers = new Map<ThemeStyle.Provider, [ThemeStyle.Provider, boolean]>();
-
-    itsEach(
-        slot.seed,
-        style => {
-
-          let key: ThemeStyle.Provider;
-          let provider: ThemeStyle.Provider;
-          let isId: boolean;
-
-          if (typeof style === 'function') {
-            key = provider = style;
-            isId = true;
-          } else {
-            key = style.style;
-            provider = style.provide.bind(style);
-            isId = false;
-          }
-
-          const prev = providers.get(key);
-
-          if (!prev) {
-            providers.set(key, [provider, isId]);
-          } else {
-
-            const [prevProvider, hasId] = prev;
-
-            providers.set(
-                key,
-                [
-                  isId ? combineStyles(provider, prevProvider) : combineStyles(prevProvider, provider),
-                  isId || hasId,
-                ],
-            );
-          }
+          return receiver => to((_, by) => receiver(byId, by));
         },
-    );
+      })),
+  )),
+  toString: () => '[ThemeStyle]',
+};
 
-    if (providers.size || !slot.hasFallback) {
-      slot.insert(byId);
+function ThemeStyle$create(
+    styles: ThemeStyle[],
+    _target: CxEntry.Target<ThemeStyle.ById, ThemeStyle>,
+): ThemeStyle.ById {
+
+  const providers = new Map<ThemeStyle.Provider, [ThemeStyle.Provider, boolean]>();
+
+  for (const style of styles) {
+
+    let key: ThemeStyle.Provider;
+    let provider: ThemeStyle.Provider;
+    let isId: boolean;
+
+    if (typeof style === 'function') {
+      key = provider = style;
+      isId = true;
+    } else {
+      key = style.style;
+      provider = style.provide.bind(style);
+      isId = false;
     }
 
-    function byId(id: ThemeStyle.Provider): ThemeStyle.Provider {
+    const prev = providers.get(key);
 
-      const existing = providers.get(id);
+    if (!prev) {
+      providers.set(key, [provider, isId]);
+    } else {
 
-      if (!existing) {
-        return id;
-      }
+      const [prevProvider, hasId] = prev;
 
-      const [provider, hasId] = existing;
-
-      return hasId ? provider : combineStyles(id, provider);
+      providers.set(
+          key,
+          [
+            isId ? ThemeStyle$combine(provider, prevProvider) : ThemeStyle$combine(prevProvider, provider),
+            isId || hasId,
+          ],
+      );
     }
   }
 
+  return byId;
+
+  function byId(id: ThemeStyle.Provider): ThemeStyle.Provider {
+
+    const existing = providers.get(id);
+
+    if (!existing) {
+      return id;
+    }
+
+    const [provider, hasId] = existing;
+
+    return hasId ? provider : ThemeStyle$combine(id, provider);
+  }
 }
 
-/**
- * A key of bootstrap context value containing theme styles.
- */
-export const ThemeStyle: ContextRef<ThemeStyle.ById, ThemeStyle> = (/*#__PURE__*/ new ThemeStyleKey());
-
-/**
- * @internal
- */
-function combineStyles(first: ThemeStyle.Provider, second: ThemeStyle.Provider): ThemeStyle.Provider {
+function ThemeStyle$combine(first: ThemeStyle.Provider, second: ThemeStyle.Provider): ThemeStyle.Provider {
   return theme => stypRules(first(theme), second(theme));
 }

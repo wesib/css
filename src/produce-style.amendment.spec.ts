@@ -2,6 +2,7 @@ import { doqryText } from '@frontmeans/doqry';
 import { immediateRenderScheduler } from '@frontmeans/render-scheduler';
 import { StypProperties, StypRenderer, stypRoot, StypRules } from '@frontmeans/style-producer';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { cxBuildAsset, cxConstAsset } from '@proc7ts/context-builder';
 import { trackValue } from '@proc7ts/fun-events';
 import {
   Component,
@@ -57,7 +58,7 @@ describe('@ProduceStyle', () => {
         undefined,
         {
           setup(setup) {
-            setup.perComponent({ a: ComponentStypRenderer, is: mockRenderer });
+            setup.perComponent(cxConstAsset(ComponentStypRenderer, mockRenderer));
           },
         },
     );
@@ -74,17 +75,17 @@ describe('@ProduceStyle', () => {
         stypRoot({ display: 'block' }).rules,
         {
           setup(setup) {
-            setup.perComponent({
-              a: ComponentStypFormat,
-              by(context: ComponentContext) {
+            setup.perComponent(cxBuildAsset(
+              ComponentStypFormat,
+              target => {
 
-                const format = new ComponentStypDomFormat(context);
+                const format = new ComponentStypDomFormat(target.get(ComponentContext));
 
                 produceSpy = jest.spyOn(format, 'produce');
 
                 return format;
               },
-            });
+            ));
           },
         },
     );
@@ -102,17 +103,17 @@ describe('@ProduceStyle', () => {
         stypRoot({ display: 'block' }).rules,
         {
           setup(setup) {
-            setup.perComponent({
-              a: ComponentStypFormat,
-              by(context: ComponentContext) {
+            setup.perComponent(cxBuildAsset(
+              ComponentStypFormat,
+              target => {
 
-                const format = new ComponentStypDomFormat(context, { when: 'connected' });
+                const format = new ComponentStypDomFormat(target.get(ComponentContext), { when: 'connected' });
 
                 produceSpy = jest.spyOn(format, 'produce');
 
                 return format;
               },
-            });
+            ));
           },
         },
     );
@@ -127,7 +128,10 @@ describe('@ProduceStyle', () => {
         {
           name: 'text-component',
           setup(setup) {
-            setup.perComponent({ a: ComponentStypFormat, as: ComponentStypDomFormat });
+            setup.perComponent(cxBuildAsset(
+                ComponentStypFormat,
+                target => new ComponentStypDomFormat(target.get(ComponentContext)),
+            ));
           },
         },
     );
@@ -169,12 +173,10 @@ describe('@ProduceStyle', () => {
   it('prepends `:host` CSS rule selector when shadow DOM supported', async () => {
     await mount(undefined, {
       setup(setup) {
-        setup.perComponent({
-          a: ShadowContentRoot,
-          by(ctx: ComponentContext) {
-            return ctx.element;
-          },
-        });
+        setup.perComponent(cxBuildAsset(
+          ShadowContentRoot,
+          target => target.get(ComponentContext).element,
+        ));
       },
     });
 
@@ -192,10 +194,7 @@ describe('@ProduceStyle', () => {
     @Component(def)
     @Feature({
       setup(setup) {
-        setup.provide({
-          a: DefaultRenderScheduler,
-          is: immediateRenderScheduler,
-        });
+        setup.provide(cxConstAsset(DefaultRenderScheduler, immediateRenderScheduler));
       },
     })
     class TestComponent {

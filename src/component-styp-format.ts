@@ -10,7 +10,7 @@ import {
   StypRenderer,
   StypRules,
 } from '@frontmeans/style-producer';
-import { ContextKey, ContextKey__symbol, SingleContextKey } from '@proc7ts/context-values';
+import { CxEntry, cxSingle } from '@proc7ts/context-values';
 import { elementOrArray, extendSetOfElements, setOfElements, valueProvider } from '@proc7ts/primitives';
 import { Supply } from '@proc7ts/supply';
 import { ComponentContext, ShadowContentRoot } from '@wesib/wesib';
@@ -76,14 +76,11 @@ export interface ComponentStypFormatConfig extends StypFormatConfig {
 
 }
 
-const ComponentStypFormat__symbol = (/*#__PURE__*/ new SingleContextKey<ComponentStypFormat>(
-    'component-styp-format',
-    {
-      byDefault(context) {
-        return new ComponentStypObjectFormat(context.get(ComponentContext));
-      },
-    },
-));
+const ComponentStypFormat$perContext: CxEntry.Definer<ComponentStypFormat> = (/*#__PURE__*/ cxSingle({
+  byDefault(context) {
+    return new ComponentStypObjectFormat(context.get(ComponentContext));
+  },
+}));
 
 /**
  * Component style production format.
@@ -96,11 +93,12 @@ const ComponentStypFormat__symbol = (/*#__PURE__*/ new SingleContextKey<Componen
  */
 export abstract class ComponentStypFormat {
 
-  /**
-   * A key of component context value containing its style production format.
-   */
-  static get [ContextKey__symbol](): ContextKey<ComponentStypFormat> {
-    return ComponentStypFormat__symbol;
+  static perContext(target: CxEntry.Target<ComponentStypFormat>): CxEntry.Definition<ComponentStypFormat> {
+    return ComponentStypFormat$perContext(target);
+  }
+
+  static toString(): string {
+    return '[ComponentStypFormat]';
   }
 
   /**
@@ -213,9 +211,6 @@ export abstract class ComponentStypFormat {
 }
 
 
-/**
- * @internal
- */
 function shadowRenderer(hostSelector: DoqryPurePicker.Part | undefined): StypRenderer {
   return {
     order: -100,
@@ -243,9 +238,6 @@ function shadowRenderer(hostSelector: DoqryPurePicker.Part | undefined): StypRen
   };
 }
 
-/**
- * @internal
- */
 function noShadowRenderer(hostSelector: DoqryPurePicker.Part): StypRenderer {
   return {
     order: -100,
@@ -271,9 +263,6 @@ function noShadowRenderer(hostSelector: DoqryPurePicker.Part): StypRenderer {
   };
 }
 
-/**
- * @internal
- */
 function extractHostSelector(
     selector: DoqryPicker,
 ): [DoqryPicker, DoqryPicker?] {
@@ -303,9 +292,6 @@ function extractHostSelector(
   return [selector];
 }
 
-/**
- * @internal
- */
 function extendHostSelector(
     selector: DoqryPicker,
     {

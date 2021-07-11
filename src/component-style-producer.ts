@@ -1,7 +1,7 @@
 import { produceBasicStyle, StypFormat, StypRules } from '@frontmeans/style-producer';
-import { SingleContextKey, SingleContextRef } from '@proc7ts/context-values';
+import { cxDefaultScoped, CxEntry, cxSingle } from '@proc7ts/context-values';
 import { Supply } from '@proc7ts/supply';
-import { bootstrapDefault } from '@wesib/wesib';
+import { BootstrapContext } from '@wesib/wesib';
 
 /**
  * Component style producer signature.
@@ -21,7 +21,7 @@ export type ComponentStyleProducer =
     ) => Supply;
 
 /**
- * A key of bootstrap, definition, or component context value containing a component style producer.
+ * Bootstrap, definition, or component context entry containing a component style producer.
  *
  * Utilizes `produceBasicStyle()` by default. I.e. it does not enable default renderers. To enable them all a
  * {@link StyleProducerSupport} can be used.
@@ -30,11 +30,12 @@ export type ComponentStyleProducer =
  *
  * [@frontmeans/style-producer]: https://www.npmjs.com/package/@frontmeans/style-producer
  */
-export const ComponentStyleProducer: SingleContextRef<ComponentStyleProducer> = (
-    /*#__PURE__*/ new SingleContextKey<ComponentStyleProducer>(
-        'component-style-producer',
-        {
-          byDefault: bootstrapDefault(() => produceBasicStyle),
-        },
-    )
-);
+export const ComponentStyleProducer: CxEntry<ComponentStyleProducer> = {
+  perContext: (/*#__PURE__*/ cxDefaultScoped(
+      BootstrapContext,
+      (/*#__PURE__*/ cxSingle({
+        byDefault: _target => produceBasicStyle,
+      })),
+  )),
+  toString: () => '[ComponentStyleProducer]',
+};

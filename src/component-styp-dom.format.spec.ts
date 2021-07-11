@@ -2,7 +2,7 @@ import { newNamespaceAliaser } from '@frontmeans/namespace-aliaser';
 import { immediateRenderScheduler, RenderSchedule, RenderScheduleOptions } from '@frontmeans/render-scheduler';
 import { StypRenderer } from '@frontmeans/style-producer';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { ContextRegistry } from '@proc7ts/context-values';
+import { CxBuilder, cxConstAsset } from '@proc7ts/context-builder';
 import { noop } from '@proc7ts/primitives';
 import { ComponentContext, ComponentRenderScheduler, DefaultNamespaceAliaser } from '@wesib/wesib';
 import { Mock } from 'jest-mock';
@@ -17,18 +17,17 @@ describe('componentStypDomFormatConfig', () => {
 
   beforeEach(() => {
 
-    const registry = new ContextRegistry<ComponentContext>();
+    const cxBuilder = new CxBuilder<ComponentContext>(get => ({
+      element: document.createElement('test-element'),
+      get,
+    } as Partial<ComponentContext> as ComponentContext));
 
-    registry.provide({ a: DefaultNamespaceAliaser, by: newNamespaceAliaser });
+    cxBuilder.provide(cxConstAsset(DefaultNamespaceAliaser, newNamespaceAliaser()));
 
     scheduler = jest.fn(immediateRenderScheduler);
+    cxBuilder.provide(cxConstAsset(ComponentRenderScheduler, scheduler));
 
-    registry.provide({ a: ComponentRenderScheduler, is: scheduler });
-
-    context = {
-      element: document.createElement('test-element'),
-      get: registry.newValues().get,
-    } as ComponentContext;
+    context = cxBuilder.context;
     format = {
       context,
       renderer(): StypRenderer {
