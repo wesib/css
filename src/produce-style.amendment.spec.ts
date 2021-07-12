@@ -1,17 +1,10 @@
 import { doqryText } from '@frontmeans/doqry';
-import { immediateRenderScheduler } from '@frontmeans/render-scheduler';
+import { immediateRenderScheduler, RenderScheduler } from '@frontmeans/render-scheduler';
 import { StypProperties, StypRenderer, stypRoot, StypRules } from '@frontmeans/style-producer';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { cxBuildAsset, cxConstAsset } from '@proc7ts/context-builder';
 import { trackValue } from '@proc7ts/fun-events';
-import {
-  Component,
-  ComponentContext,
-  ComponentDef,
-  DefaultRenderScheduler,
-  Feature,
-  ShadowContentRoot,
-} from '@wesib/wesib';
+import { Component, ComponentContext, ComponentDef, Feature, ShadowContentRoot } from '@wesib/wesib';
 import { testDefinition } from '@wesib/wesib/testing';
 import { SpyInstance } from 'jest-mock';
 import { ComponentStypDomFormat } from './component-styp-dom.format';
@@ -194,7 +187,7 @@ describe('@ProduceStyle', () => {
     @Component(def)
     @Feature({
       setup(setup) {
-        setup.provide(cxConstAsset(DefaultRenderScheduler, immediateRenderScheduler));
+        setup.provide(cxConstAsset(RenderScheduler, immediateRenderScheduler));
       },
     })
     class TestComponent {

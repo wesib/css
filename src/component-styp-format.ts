@@ -70,7 +70,7 @@ export interface ComponentStypFormatConfig extends StypFormatConfig {
   /**
    * Namespace aliaser to use.
    *
-   * `DefaultNamespaceAliaser` is used when omitted.
+   * Default `NamespaceAliaser` used when omitted.
    */
   readonly nsAlias?: NamespaceAliaser;
 

@@ -1,6 +1,6 @@
-import { css__naming, NamespaceDef, QualifiedName } from '@frontmeans/namespace-aliaser';
+import { css__naming, NamespaceAliaser, NamespaceDef, QualifiedName } from '@frontmeans/namespace-aliaser';
 import { CxEntry, cxSingle } from '@proc7ts/context-values';
-import { ComponentContext, DefaultNamespaceAliaser, DefinitionContext } from '@wesib/wesib';
+import { ComponentContext, DefinitionContext } from '@wesib/wesib';
 
 export type ElementIdClass = QualifiedName;
 
@@ -21,7 +21,7 @@ let uniqueClassSeq = 0;
 
 function ElementIdClass$byDefault(target: CxEntry.Target<ElementIdClass>): ElementIdClass {
 
-  const nsAlias = target.get(DefaultNamespaceAliaser);
+  const nsAlias = target.get(NamespaceAliaser);
   const context = target.get(ComponentContext);
   const { tagName = 'component' } = context.get(DefinitionContext).elementDef;
   const local = `${tagName}#${++uniqueClassSeq}`;
