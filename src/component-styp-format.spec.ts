@@ -1,6 +1,6 @@
 import { nodeDocument } from '@frontmeans/dom-primitives';
 import { doqryPicker, DoqryPicker, DoqrySelector } from '@frontmeans/doqry';
-import { newNamespaceAliaser } from '@frontmeans/namespace-aliaser';
+import { NamespaceAliaser, newNamespaceAliaser } from '@frontmeans/namespace-aliaser';
 import {
   immediateRenderScheduler,
   newManualRenderScheduler,
@@ -10,6 +10,7 @@ import {
 import { produceBasicStyle, StypFormatConfig, StypRenderer, stypRoot } from '@frontmeans/style-producer';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { CxBuilder, cxConstAsset } from '@proc7ts/context-builder';
+import { CxGlobals } from '@proc7ts/context-values';
 import { trackValue } from '@proc7ts/fun-events';
 import { Supply } from '@proc7ts/supply';
 import {
@@ -17,7 +18,6 @@ import {
   ComponentContext,
   ComponentRenderScheduler,
   ComponentState,
-  DefaultNamespaceAliaser,
   ShadowContentRoot,
 } from '@wesib/wesib';
 import { Mock } from 'jest-mock';
@@ -56,12 +56,12 @@ describe('ComponentStypDomFormat', () => {
 
     ready.it = context = cxBuilder.context;
 
+    cxBuilder.provide(cxConstAsset(CxGlobals, context));
     cxBuilder.provide(cxConstAsset(ComponentContext, context));
     cxBuilder.provide(cxConstAsset(BootstrapContext, context as any));
   });
 
   beforeEach(() => {
-    cxBuilder.provide(cxConstAsset(DefaultNamespaceAliaser, newNamespaceAliaser()));
     cxBuilder.provide(cxConstAsset(ComponentState, new ComponentState()));
   });
 
@@ -162,7 +162,7 @@ describe('ComponentStypDomFormat', () => {
 
     describe('nsAlias', () => {
       it('defaults to default namespace alias', () => {
-        expect(format.config()).toMatchObject({ nsAlias: context.get(DefaultNamespaceAliaser) });
+        expect(format.config()).toMatchObject({ nsAlias: context.get(NamespaceAliaser) });
       });
       it('respects explicit value', () => {
 
