@@ -22,7 +22,7 @@
   "types": "./index.d.ts",
   "exports": "./dist/wesib.css.js",
   "peerDependencies": {
-    "@frontmeans/style-producer": "^7.0.0",
+    "@frontmeans/style-producer": "^7.0.1",
     "@proc7ts/fun-events": "^10.5.0",
     "@wesib/wesib": "^2.0.1"
   },
