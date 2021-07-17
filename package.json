@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@frontmeans/dom-primitives": "^1.1.0",
-    "@frontmeans/doqry": "^1.0.1",
+    "@frontmeans/doqry": "^1.0.2",
     "@frontmeans/namespace-aliaser": "^2.6.2",
     "@frontmeans/render-scheduler": "^1.8.1",
     "@proc7ts/amend": "^1.0.0",
