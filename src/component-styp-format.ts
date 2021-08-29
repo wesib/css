@@ -51,7 +51,7 @@ export interface ComponentStypFormatConfig extends StypFormatConfig {
    *
    * This selector should not contain a `:host` sub-selector.
    */
-  readonly hostSelector?: DoqryPureSelector.Part | string;
+  readonly hostSelector?: DoqryPureSelector.Part | string | undefined;
 
   /**
    * Root CSS selector is never used for custom elements. A `hostSelector` is applied instead.
@@ -65,14 +65,14 @@ export interface ComponentStypFormatConfig extends StypFormatConfig {
    *
    * `ElementRenderScheduler` is used when omitted.
    */
-  readonly scheduler?: RenderScheduler;
+  readonly scheduler?: RenderScheduler | undefined;
 
   /**
    * Namespace aliaser to use.
    *
    * Default `NamespaceAliaser` used when omitted.
    */
-  readonly nsAlias?: NamespaceAliaser;
+  readonly nsAlias?: NamespaceAliaser | undefined;
 
 }
 
@@ -280,7 +280,7 @@ function extractHostSelector(
 
         if (params.length) {
           host = (params[0] as DoqrySubPicker.Parameter).slice();
-          (host[0] as { $?: string | readonly string[] }).$ = $;
+          (host[0] as { $?: string | readonly string[] | undefined }).$ = $;
         } else {
           host = $ ? [{ $ }] : [];
         }

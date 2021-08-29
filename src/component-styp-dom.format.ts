@@ -33,7 +33,7 @@ export class ComponentStypDomFormat extends ComponentStypFormat {
       {
         when = 'settled',
       }: {
-        readonly when?: 'settled' | 'connected';
+        readonly when?: 'settled' | 'connected' | undefined;
       } = {},
   ) {
     super();
