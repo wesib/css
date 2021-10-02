@@ -289,6 +289,7 @@ function extractHostSelector(
       }
     }
   }
+
   return [selector];
 }
 

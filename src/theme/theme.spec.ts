@@ -70,6 +70,7 @@ describe('Theme', () => {
 
       function style(_theme: Theme): StypRuleList {
         _theme.root.rules.add({ $: 'test' }, { $value: 'test' });
+
         return _theme.root.rules.grab({ $: 'test' });
       }
     });
@@ -92,11 +93,13 @@ describe('Theme', () => {
 
       function style1(_theme: Theme): StypRuleList {
         _theme.root.rules.add({ $: 'test1' }, { $value: 'test1' });
+
         return _theme.root.rules.grab({ $: 'test1' });
       }
 
       function style2(_theme: Theme): StypRuleList {
         _theme.root.rules.add({ $: 'test2' }, { $value: 'test2' });
+
         return _theme.root.rules.grab({ $: 'test2' });
       }
     });
@@ -158,11 +161,13 @@ describe('Theme', () => {
 
       function style1(_theme: Theme): StypRuleList {
         _theme.root.rules.add({ $: 'test1' }, { $value: 'test1' });
+
         return _theme.root.rules.grab({ $: 'test1' });
       }
 
       function style2(_theme: Theme): StypRuleList {
         _theme.root.rules.add({ $: 'test2' }, { $value: 'test2' });
+
         return _theme.root.rules.grab({ $: 'test2' });
       }
 
