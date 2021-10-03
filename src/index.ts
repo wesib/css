@@ -1,6 +1,6 @@
 /**
  * @packageDocumentation
- * @module Module @wesib/css
+ * @module @wesib/css
  */
 export * from './component-style-producer';
 export * from './component-styp-dom.format';
