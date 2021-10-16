@@ -105,7 +105,7 @@ describe('ComponentStypDomFormat', () => {
   describe('config', () => {
     describe('document', () => {
       it('defaults to component document', () => {
-        expect(format.config()).toMatchObject({ document: nodeDocument(context.element) });
+        expect(format.config()).toMatchObject({ document: nodeDocument(context.element as Node) });
       });
       it('respects explicit value', () => {
 
@@ -123,7 +123,7 @@ describe('ComponentStypDomFormat', () => {
 
         const parent = document.createElement('content-parent');
 
-        expect(format.config({ parent })).toMatchObject(parent as any);
+        expect(format.config({ parent })).toMatchObject(parent as unknown as Record<string, unknown>);
       });
     });
 

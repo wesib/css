@@ -28,7 +28,7 @@ export function componentStypDomFormatConfig(
 
   return {
     ...config,
-    document: config.document || nodeDocument(context.element),
+    document: config.document || nodeDocument(context.element as Node),
     parent: config.parent || context.contentRoot,
     rootSelector: [],
     scheduler: config.scheduler || defaultStypRenderScheduler(context, render),

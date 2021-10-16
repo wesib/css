@@ -35,7 +35,7 @@ export function ProduceStyle<
         defContext.whenComponent(context => {
           context.whenReady(({ component }) => {
 
-            const value = get(component);
+            const value = get(component as InstanceType<TClass>);
             const source: StypRules.Source = typeof value === 'function' ? value.bind(component) : value;
             const format = context.get(ComponentStypFormat);
 
