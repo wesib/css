@@ -1,5 +1,4 @@
-Wesib: CSS Producer
-===================
+# Wesib: CSS Producer
 
 [![NPM][npm-image]][npm-url]
 [![Build Status][build-status-img]][build-status-link]
@@ -28,5 +27,5 @@ to configured theme.
 [github-image]: https://img.shields.io/static/v1?logo=github&label=GitHub&message=project&color=informational
 [github-url]: https://github.com/wesib/css
 [api-docs-image]: https://img.shields.io/static/v1?logo=typescript&label=API&message=docs&color=informational
-[api-docs-url]: https://wesib.github.io/css/ 
-[Style Producer]: https://www.npmjs.com/package/@frontmeans/style-producer
+[api-docs-url]: https://wesib.github.io/css/
+[style producer]: https://www.npmjs.com/package/@frontmeans/style-producer
