@@ -43,7 +43,7 @@ describe('@ProduceStyle', () => {
   });
   it('renders styles using component CSS renderer', async () => {
 
-    const mockRenderer = jest.fn<void, Parameters<StypRenderer.Function>>(
+    const mockRenderer = jest.fn<StypRenderer.Function>(
         (producer, properties) => producer.render(properties),
     );
 
@@ -60,9 +60,7 @@ describe('@ProduceStyle', () => {
   });
   it('renders styles using DOM format', async () => {
 
-    let produceSpy!: SpyInstance<
-        ReturnType<ComponentStypFormat['produce']>,
-        Parameters<ComponentStypFormat['produce']>>;
+    let produceSpy!: SpyInstance<ComponentStypFormat['produce']>;
 
     await mount(
         stypRoot({ display: 'block' }).rules,
@@ -88,9 +86,7 @@ describe('@ProduceStyle', () => {
   });
   it('(when: connected) renders styles using DOM format', async () => {
 
-    let produceSpy!: SpyInstance<
-        ReturnType<ComponentStypDomFormat['produce']>,
-        Parameters<ComponentStypDomFormat['produce']>>;
+    let produceSpy!: SpyInstance<ComponentStypDomFormat['produce']>;
 
     await mount(
         stypRoot({ display: 'block' }).rules,

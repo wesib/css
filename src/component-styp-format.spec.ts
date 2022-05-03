@@ -1,12 +1,7 @@
 import { nodeDocument } from '@frontmeans/dom-primitives';
 import { doqryPicker, DoqryPicker, DoqrySelector } from '@frontmeans/doqry';
 import { NamespaceAliaser, newNamespaceAliaser } from '@frontmeans/namespace-aliaser';
-import {
-  immediateRenderScheduler,
-  newManualRenderScheduler,
-  RenderSchedule,
-  RenderScheduler,
-} from '@frontmeans/render-scheduler';
+import { immediateRenderScheduler, newManualRenderScheduler, RenderScheduler } from '@frontmeans/render-scheduler';
 import { produceBasicStyle, StypFormatConfig, StypRenderer, stypRoot } from '@frontmeans/style-producer';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { CxBuilder, cxConstAsset } from '@proc7ts/context-builder';
@@ -65,7 +60,7 @@ describe('ComponentStypDomFormat', () => {
     cxBuilder.provide(cxConstAsset(ComponentState, new ComponentState()));
   });
 
-  let mockRenderScheduler: Mock<RenderSchedule, Parameters<RenderScheduler>>;
+  let mockRenderScheduler: Mock<RenderScheduler>;
 
   beforeEach(() => {
     mockRenderScheduler = jest.fn(immediateRenderScheduler);
@@ -79,7 +74,7 @@ describe('ComponentStypDomFormat', () => {
     cxBuilder.provide(cxConstAsset(ElementIdClass, elementId));
   });
 
-  let mockRenderer: Mock<void, Parameters<StypRenderer.Function>>;
+  let mockRenderer: Mock<StypRenderer.Function>;
   let renderedSelector: DoqryPicker;
 
   beforeEach(() => {
@@ -89,7 +84,7 @@ describe('ComponentStypDomFormat', () => {
     });
   });
 
-  let mockProduceStyle: Mock<ReturnType<typeof produceBasicStyle>, Parameters<typeof produceBasicStyle>>;
+  let mockProduceStyle: Mock<typeof produceBasicStyle>;
 
   beforeEach(() => {
     mockProduceStyle = jest.fn(produceBasicStyle);
