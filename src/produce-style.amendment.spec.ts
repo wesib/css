@@ -4,7 +4,13 @@ import { StypProperties, StypRenderer, stypRoot, StypRules } from '@frontmeans/s
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { cxBuildAsset, cxConstAsset } from '@proc7ts/context-builder';
 import { trackValue } from '@proc7ts/fun-events';
-import { Component, ComponentContext, ComponentDef, Feature, ShadowContentRoot } from '@wesib/wesib';
+import {
+  Component,
+  ComponentContext,
+  ComponentDef,
+  Feature,
+  ShadowContentRoot,
+} from '@wesib/wesib';
 import { testDefinition } from '@wesib/wesib/testing';
 import { SpyInstance } from 'jest-mock';
 import { ComponentStypDomFormat } from './component-styp-dom.format';
@@ -15,7 +21,6 @@ import { ProduceStyle } from './produce-style.amendment';
 import { StyleProducerSupport } from './style-producer-support.feature';
 
 describe('@ProduceStyle', () => {
-
   let element: HTMLElement;
 
   beforeEach(() => {
@@ -42,98 +47,77 @@ describe('@ProduceStyle', () => {
     expect(cssStyle().display).toBe('block');
   });
   it('renders styles using component CSS renderer', async () => {
+    const mockRenderer = jest.fn<StypRenderer.Function>((producer, properties) => producer.render(properties));
 
-    const mockRenderer = jest.fn<StypRenderer.Function>(
-        (producer, properties) => producer.render(properties),
-    );
-
-    await mount(
-        undefined,
-        {
-          setup(setup) {
-            setup.perComponent(cxConstAsset(ComponentStypRenderer, mockRenderer));
-          },
-        },
-    );
+    await mount(undefined, {
+      setup(setup) {
+        setup.perComponent(cxConstAsset(ComponentStypRenderer, mockRenderer));
+      },
+    });
     expect(cssStyle().display).toBe('block');
     expect(mockRenderer).toHaveBeenCalledWith(expect.anything(), { display: 'block' });
   });
   it('renders styles using DOM format', async () => {
-
     let produceSpy!: SpyInstance<ComponentStypFormat['produce']>;
 
-    await mount(
-        stypRoot({ display: 'block' }).rules,
-        {
-          setup(setup) {
-            setup.perComponent(cxBuildAsset(
-              ComponentStypFormat,
-              target => {
+    await mount(stypRoot({ display: 'block' }).rules, {
+      setup(setup) {
+        setup.perComponent(
+          cxBuildAsset(ComponentStypFormat, target => {
+            const format = new ComponentStypDomFormat(target.get(ComponentContext));
 
-                const format = new ComponentStypDomFormat(target.get(ComponentContext));
+            produceSpy = jest.spyOn(format, 'produce');
 
-                produceSpy = jest.spyOn(format, 'produce');
-
-                return format;
-              },
-            ));
-          },
-        },
-    );
+            return format;
+          }),
+        );
+      },
+    });
 
     expect(produceSpy).toHaveBeenCalled();
     expect(cssStyle().display).toBe('block');
   });
   it('(when: connected) renders styles using DOM format', async () => {
-
     let produceSpy!: SpyInstance<ComponentStypDomFormat['produce']>;
 
-    await mount(
-        stypRoot({ display: 'block' }).rules,
-        {
-          setup(setup) {
-            setup.perComponent(cxBuildAsset(
-              ComponentStypFormat,
-              target => {
+    await mount(stypRoot({ display: 'block' }).rules, {
+      setup(setup) {
+        setup.perComponent(
+          cxBuildAsset(ComponentStypFormat, target => {
+            const format = new ComponentStypDomFormat(target.get(ComponentContext), {
+              when: 'connected',
+            });
 
-                const format = new ComponentStypDomFormat(target.get(ComponentContext), { when: 'connected' });
+            produceSpy = jest.spyOn(format, 'produce');
 
-                produceSpy = jest.spyOn(format, 'produce');
-
-                return format;
-              },
-            ));
-          },
-        },
-    );
+            return format;
+          }),
+        );
+      },
+    });
 
     expect(produceSpy).toHaveBeenCalled();
     expect(cssStyle().display).toBe('block');
   });
   it('does not remove styles on component disposal', async () => {
-
-    const context = await mount(
-        () => stypRoot({ display: 'block' }).rules,
-        {
-          name: 'text-component',
-          setup(setup) {
-            setup.perComponent(cxBuildAsset(
-                ComponentStypFormat,
-                target => new ComponentStypDomFormat(target.get(ComponentContext)),
-            ));
-          },
-        },
-    );
+    const context = await mount(() => stypRoot({ display: 'block' }).rules, {
+      name: 'text-component',
+      setup(setup) {
+        setup.perComponent(
+          cxBuildAsset(
+            ComponentStypFormat,
+            target => new ComponentStypDomFormat(target.get(ComponentContext)),
+          ),
+        );
+      },
+    });
 
     context.supply.off();
     expect(element.querySelector('style')!.textContent).toContain(
-        '{\n'
-        + '  display: block;\n'
-        + '}',
+      '{\n' + '  display: block;\n' + '}',
     );
   });
   it('updates style', async () => {
-
     const css = trackValue<StypProperties>({ display: 'block' });
 
     await mount(stypRoot(css));
@@ -142,7 +126,6 @@ describe('@ProduceStyle', () => {
     expect(cssStyle().display).toBe('inline-block');
   });
   it('prepends element id class to CSS rule selector', async () => {
-
     const context = await mount();
     const rule = cssStyleRule();
     const idClass = context.get(ElementIdClass);
@@ -150,7 +133,6 @@ describe('@ProduceStyle', () => {
     expect(rule.selectorText).toBe(doqryText({ c: idClass }));
   });
   it('prepends element id class to CSS rule selector of anonymous component', async () => {
-
     const context = await mount(undefined, {});
     const rule = cssStyleRule();
     const idClass = context.get(ElementIdClass);
@@ -162,10 +144,9 @@ describe('@ProduceStyle', () => {
   it('prepends `:host` CSS rule selector when shadow DOM supported', async () => {
     await mount(undefined, {
       setup(setup) {
-        setup.perComponent(cxBuildAsset(
-          ShadowContentRoot,
-          target => target.get(ComponentContext).element,
-        ));
+        setup.perComponent(
+          cxBuildAsset(ShadowContentRoot, target => target.get(ComponentContext).element),
+        );
       },
     });
 
@@ -175,11 +156,10 @@ describe('@ProduceStyle', () => {
   });
 
   async function mount(
-      rules: StypRules.Source = stypRoot({ display: 'block' }),
-      def: ComponentDef = { name: 'test-component' },
-      config?: ComponentStypFormatConfig,
+    rules: StypRules.Source = stypRoot({ display: 'block' }),
+    def: ComponentDef = { name: 'test-component' },
+    config?: ComponentStypFormatConfig,
   ): Promise<ComponentContext> {
-
     @Component(def)
     @Feature({
       setup(setup) {
@@ -193,7 +173,7 @@ describe('@ProduceStyle', () => {
         return rules;
       }
 
-    }
+}
 
     const defContext = await testDefinition(TestComponent);
 
@@ -205,7 +185,6 @@ describe('@ProduceStyle', () => {
   }
 
   function cssStyleRule(): CSSStyleRule {
-
     const styles = element.querySelectorAll('style');
 
     expect(styles).toHaveLength(1);

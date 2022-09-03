@@ -12,17 +12,15 @@ import { BootstrapContext } from '@wesib/wesib';
 import { ThemeStyle } from './theme-style';
 
 export interface ThemeFactory {
-
   newTheme(): Theme;
-
 }
 
-const Theme$perContext: CxEntry.Definer<Theme> = (/*#__PURE__*/ cxDefaultScoped(
-    BootstrapContext,
-    (/*#__PURE__*/ cxSingle({
-      byDefault: target => new Theme$(target.get(ThemeStyle)),
-    })),
-));
+const Theme$perContext: CxEntry.Definer<Theme> = /*#__PURE__*/ cxDefaultScoped(
+  BootstrapContext,
+  /*#__PURE__*/ cxSingle({
+    byDefault: target => new Theme$(target.get(ThemeStyle)),
+  }),
+);
 
 /**
  * A hierarchy of CSS rules within single root.
@@ -89,19 +87,16 @@ class Theme$ extends Theme {
   }
 
   style(...styles: ThemeStyle.Provider[]): StypRules {
-
     const theme = this;
 
     return lazyStypRules(...styles.reduce<StypRules[]>(addStyleRules, []));
 
     function addStyleRules(target: StypRules[], style: ThemeStyle.Provider): StypRules[] {
-
       const existing = theme._rules.get(style);
 
       if (existing) {
         target.push(existing);
       } else {
-
         const constructed = theme._styles(style)(theme);
 
         theme._rules.set(style, constructed);

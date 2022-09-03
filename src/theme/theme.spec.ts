@@ -1,4 +1,10 @@
-import { RefStypRule, StypLength, StypRule, StypRuleList, StypRuleRef } from '@frontmeans/style-producer';
+import {
+  RefStypRule,
+  StypLength,
+  StypRule,
+  StypRuleList,
+  StypRuleRef,
+} from '@frontmeans/style-producer';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { cxConstAsset } from '@proc7ts/context-builder';
 import { onceAfter } from '@proc7ts/fun-events';
@@ -9,11 +15,9 @@ import { Theme } from './theme';
 import { ThemeStyle } from './theme-style';
 
 describe('Theme', () => {
-
   let theme: Theme;
 
   describe('ref', () => {
-
     interface RuleProperties {
       $length: StypLength;
     }
@@ -26,7 +30,6 @@ describe('Theme', () => {
     });
 
     it('obtains CSS rule reference', () => {
-
       const receiver = jest.fn();
 
       ref.read.do(onceAfter)(receiver);
@@ -51,14 +54,12 @@ describe('Theme', () => {
       }
     });
     it('obtains registered style', async () => {
-
       @Feature({
         setup(setup) {
           setup.provide(cxConstAsset(ThemeStyle, style));
         },
       })
-      class StyleFeature {
-      }
+      class StyleFeature {}
 
       await bootstrap(StyleFeature);
 
@@ -75,14 +76,12 @@ describe('Theme', () => {
       }
     });
     it('obtains unregistered style', async () => {
-
       @Feature({
         setup(setup) {
           setup.provide(cxConstAsset(ThemeStyle, style1));
         },
       })
-      class StyleFeature {
-      }
+      class StyleFeature {}
 
       await bootstrap(StyleFeature);
 
@@ -116,44 +115,38 @@ describe('Theme', () => {
     describe('combining', () => {
       // eslint-disable-next-line jest/expect-expect
       it('combines registered style and extension', async () => {
-
         @Feature({
           setup(setup) {
             setup.provide(cxConstAsset(ThemeStyle, style1));
             setup.provide(cxConstAsset(ThemeStyle, { style: style1, provide: style2 }));
           },
         })
-        class StyleFeature {
-        }
+        class StyleFeature {}
 
         await bootstrap(StyleFeature);
         checkCombined();
       });
       // eslint-disable-next-line jest/expect-expect
       it('combines style with extension registered before it', async () => {
-
         @Feature({
           setup(setup) {
             setup.provide(cxConstAsset(ThemeStyle, { style: style1, provide: style2 }));
             setup.provide(cxConstAsset(ThemeStyle, style1));
           },
         })
-        class StyleFeature {
-        }
+        class StyleFeature {}
 
         await bootstrap(StyleFeature);
         checkCombined();
       });
       // eslint-disable-next-line jest/expect-expect
       it('combines unregistered style and registered extension', async () => {
-
         @Feature({
           setup(setup) {
             setup.provide(cxConstAsset(ThemeStyle, { style: style1, provide: style2 }));
           },
         })
-        class StyleFeature {
-        }
+        class StyleFeature {}
 
         await bootstrap(StyleFeature);
         checkCombined();
@@ -172,7 +165,6 @@ describe('Theme', () => {
       }
 
       function checkCombined(): void {
-
         const rules: StypRule[] = [...theme.style(style1)];
 
         expect(rules).toHaveLength(2);
@@ -195,16 +187,13 @@ describe('Theme', () => {
   });
 
   async function bootstrap(...features: Class[]): Promise<BootstrapContext> {
-
     @Feature({
       init(context) {
         theme = context.get(Theme);
       },
     })
-    class TestFeature {
-    }
+    class TestFeature {}
 
     return bootstrapComponents(TestFeature, ...features).whenReady;
   }
-
 });

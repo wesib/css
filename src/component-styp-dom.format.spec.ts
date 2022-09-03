@@ -10,17 +10,17 @@ import { componentStypDomFormatConfig } from './component-styp-dom.format-config
 import { ComponentStypFormat } from './component-styp-format';
 
 describe('componentStypDomFormatConfig', () => {
-
   let context: ComponentContext;
   let format: ComponentStypFormat;
   let scheduler: Mock<RenderScheduler>;
 
   beforeEach(() => {
-
-    const cxBuilder = new CxBuilder<ComponentContext>(get => ({
-      element: document.createElement('test-element'),
-      get,
-    } as Partial<ComponentContext> as ComponentContext));
+    const cxBuilder = new CxBuilder<ComponentContext>(
+      get => ({
+          element: document.createElement('test-element'),
+          get,
+        } as Partial<ComponentContext> as ComponentContext),
+    );
 
     scheduler = jest.fn(immediateRenderScheduler);
     cxBuilder.provide(cxConstAsset(ComponentRenderScheduler, scheduler));
@@ -37,14 +37,12 @@ describe('componentStypDomFormatConfig', () => {
   });
 
   it('does not modify schedule options by default', () => {
-
     const config = componentStypDomFormatConfig(format);
 
     config.scheduler!()(noop);
     expect(scheduler).toHaveBeenCalledWith({});
   });
   it('applies render definition to schedule options by default', () => {
-
     const config = componentStypDomFormatConfig(format, undefined, { when: 'connected' });
 
     config.scheduler!({ window })(noop);

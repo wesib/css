@@ -5,7 +5,6 @@ import { ThemeStyle } from './theme-style';
 
 describe('ThemeStyle', () => {
   it('falls back when absent', () => {
-
     const cxBuilder = new CxBuilder(get => ({ get }));
 
     cxBuilder.provide(cxConstAsset(BootstrapContext, cxBuilder.context as any));

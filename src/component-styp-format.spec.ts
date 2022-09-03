@@ -1,8 +1,17 @@
 import { nodeDocument } from '@frontmeans/dom-primitives';
 import { doqryPicker, DoqryPicker, DoqrySelector } from '@frontmeans/doqry';
 import { NamespaceAliaser, newNamespaceAliaser } from '@frontmeans/namespace-aliaser';
-import { immediateRenderScheduler, newManualRenderScheduler, RenderScheduler } from '@frontmeans/render-scheduler';
-import { produceBasicStyle, StypFormatConfig, StypRenderer, stypRoot } from '@frontmeans/style-producer';
+import {
+  immediateRenderScheduler,
+  newManualRenderScheduler,
+  RenderScheduler,
+} from '@frontmeans/render-scheduler';
+import {
+  produceBasicStyle,
+  StypFormatConfig,
+  StypRenderer,
+  stypRoot,
+} from '@frontmeans/style-producer';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { CxBuilder, cxConstAsset } from '@proc7ts/context-builder';
 import { CxGlobals } from '@proc7ts/context-values';
@@ -22,7 +31,6 @@ import { ComponentStypFormat, ComponentStypFormatConfig } from './component-styp
 import { ElementIdClass, ElementIdClass__NS } from './element-id-class.impl';
 
 describe('ComponentStypDomFormat', () => {
-
   let done: Supply;
 
   beforeEach(() => {
@@ -36,18 +44,19 @@ describe('ComponentStypDomFormat', () => {
   let context: ComponentContext;
 
   beforeEach(() => {
-
     const ready = trackValue<ComponentContext>();
 
-    cxBuilder = new CxBuilder((get, { supply }) => ({
-      element: document.createElement('test-element'),
-      supply,
-      whenReady: ready.read,
-      whenSettled: ready.read,
-      settled: true,
-      get,
-      contentRoot: document.createElement('content-root'),
-    } as Partial<ComponentContext> as ComponentContext));
+    cxBuilder = new CxBuilder(
+      (get, { supply }) => ({
+          element: document.createElement('test-element'),
+          supply,
+          whenReady: ready.read,
+          whenSettled: ready.read,
+          settled: true,
+          get,
+          contentRoot: document.createElement('content-root'),
+        } as Partial<ComponentContext> as ComponentContext),
+    );
 
     ready.it = context = cxBuilder.context;
 
@@ -103,7 +112,6 @@ describe('ComponentStypDomFormat', () => {
         expect(format.config()).toMatchObject({ document: nodeDocument(context.element as Node) });
       });
       it('respects explicit value', () => {
-
         const doc = document.implementation.createHTMLDocument('test');
 
         expect(format.config({ document: doc })).toMatchObject({ document: doc });
@@ -115,10 +123,11 @@ describe('ComponentStypDomFormat', () => {
         expect(format.config()).toMatchObject({ parent: context.contentRoot });
       });
       it('respects explicit value', () => {
-
         const parent = document.createElement('content-parent');
 
-        expect(format.config({ parent })).toMatchObject(parent as unknown as Record<string, unknown>);
+        expect(format.config({ parent })).toMatchObject(
+          parent as unknown as Record<string, unknown>,
+        );
       });
     });
 
@@ -127,9 +136,11 @@ describe('ComponentStypDomFormat', () => {
         expect(format.config()).toMatchObject({ rootSelector: [] });
       });
       it('ignores explicit value', () => {
-        expect(format.config({
-          rootSelector: 'some',
-        } as StypFormatConfig as ComponentStypFormatConfig)).toMatchObject({
+        expect(
+          format.config({
+            rootSelector: 'some',
+          } as StypFormatConfig as ComponentStypFormatConfig),
+        ).toMatchObject({
           rootSelector: [],
         });
       });
@@ -148,7 +159,6 @@ describe('ComponentStypDomFormat', () => {
         expect(mockRenderScheduler).toHaveBeenCalled();
       });
       it('respects explicit value', () => {
-
         const scheduler = newManualRenderScheduler();
 
         expect(format.config({ scheduler })).toMatchObject({ scheduler });
@@ -160,7 +170,6 @@ describe('ComponentStypDomFormat', () => {
         expect(format.config()).toMatchObject({ nsAlias: context.get(NamespaceAliaser) });
       });
       it('respects explicit value', () => {
-
         const nsAlias = newNamespaceAliaser();
 
         expect(format.config({ nsAlias })).toMatchObject({ nsAlias });
@@ -175,13 +184,12 @@ describe('ComponentStypDomFormat', () => {
     });
 
     function produce(config: ComponentStypFormatConfig = {}): void {
-      format.produce(
-          stypRoot({ font: 'serif' }).rules,
-          {
-            ...config,
-            renderer: mockRenderer,
-          },
-      ).needs(done);
+      format
+        .produce(stypRoot({ font: 'serif' }).rules, {
+          ...config,
+          renderer: mockRenderer,
+        })
+        .needs(done);
     }
   });
 
@@ -194,7 +202,6 @@ describe('ComponentStypDomFormat', () => {
   describe('selector modification', () => {
     describe('with shadow DOM', () => {
       beforeEach(() => {
-
         const contentRoot = context.contentRoot as Element;
         const shadowRoot = contentRoot.attachShadow({ mode: 'closed' });
 
@@ -214,14 +221,18 @@ describe('ComponentStypDomFormat', () => {
         expect(renderedSelector).toEqual([{ e: 'test-element' }]);
       });
       it('replaces `:host` selector with host one', () => {
-        produce([{ u: [':', 'host'] }, { e: 'nested-element' }], { hostSelector: { c: 'host-class' } });
-        expect(renderedSelector).toEqual([{ u: [[':', 'host', [{ c: ['host-class'] }]]] }, { e: 'nested-element' }]);
+        produce([{ u: [':', 'host'] }, { e: 'nested-element' }], {
+          hostSelector: { c: 'host-class' },
+        });
+        expect(renderedSelector).toEqual([
+          { u: [[':', 'host', [{ c: ['host-class'] }]]] },
+          { e: 'nested-element' },
+        ]);
       });
       it('extends `:host(selector)` selector with host one', () => {
-        produce(
-            [{ u: [':', 'host', { c: 'test-class' }] }, { e: 'nested-element' }],
-            { hostSelector: { c: 'host-class' } },
-        );
+        produce([{ u: [':', 'host', { c: 'test-class' }] }, { e: 'nested-element' }], {
+          hostSelector: { c: 'host-class' },
+        });
         expect(renderedSelector).toEqual([
           { u: [[':', 'host', [{ c: ['test-class', 'host-class'] }]]] },
           { e: 'nested-element' },
@@ -235,7 +246,6 @@ describe('ComponentStypDomFormat', () => {
         expect(renderedSelector).toEqual([{ c: [elementId] }]);
       });
       it('replaces root selector with normalized explicit host selector', () => {
-
         const hostSelector = { e: 'host-element', c: 'some' };
 
         produce([], { hostSelector });
@@ -251,7 +261,10 @@ describe('ComponentStypDomFormat', () => {
         expect(renderedSelector).toEqual([{ e: 'host-element' }]);
       });
       it('retains element from `:host(element)` selector', () => {
-        produce({ u: [':', 'host', { e: 'test-element' }] }, { hostSelector: { e: 'host-element' } });
+        produce(
+          { u: [':', 'host', { e: 'test-element' }] },
+          { hostSelector: { e: 'host-element' } },
+        );
         expect(renderedSelector).toEqual([{ e: 'test-element' }]);
       });
       it('retains element and namespace from `:host(ns|element) selector', () => {
@@ -278,7 +291,10 @@ describe('ComponentStypDomFormat', () => {
       });
 
       it('appends sub-selector to `:host([attr])` selector', () => {
-        produce({ u: [':', 'host', { u: ['test-attr'] }] }, { hostSelector: { u: ['::', 'after'] } });
+        produce(
+          { u: [':', 'host', { u: ['test-attr'] }] },
+          { hostSelector: { u: ['::', 'after'] } },
+        );
         expect(renderedSelector).toEqual([{ u: [['test-attr'], ['::', 'after']] }]);
       });
       it('retains sub-selector from `:host([attr])` selector', () => {
@@ -327,17 +343,15 @@ describe('ComponentStypDomFormat', () => {
     });
 
     function produce(selector: DoqrySelector, config?: ComponentStypFormatConfig): void {
-
       const { rules } = stypRoot();
       const rule = rules.add(selector);
 
-      format.produce(
-          rule.rules.self,
-          {
-            ...config,
-            renderer: mockRenderer,
-          },
-      ).needs(done);
+      format
+        .produce(rule.rules.self, {
+          ...config,
+          renderer: mockRenderer,
+        })
+        .needs(done);
     }
   });
 });

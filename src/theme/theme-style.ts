@@ -15,7 +15,6 @@ import { Theme } from './theme';
 export type ThemeStyle = ThemeStyle.Provider | ThemeStyle.Extension;
 
 export namespace ThemeStyle {
-
   /**
    * Theme style provider function.
    *
@@ -37,7 +36,6 @@ export namespace ThemeStyle {
    * An extension should be registered in bootstrap context in order to be applied.
    */
   export interface Extension {
-
     /**
      * A theme style provider to extend.
      */
@@ -55,7 +53,6 @@ export namespace ThemeStyle {
      * @returns Dynamically updated CSS rule set containing the applied styling.
      */
     provide(theme: Theme): StypRules;
-
   }
 
   /**
@@ -66,38 +63,34 @@ export namespace ThemeStyle {
    * @returns A combined theme style provider.
    */
   export type ById = (this: void, style: ThemeStyle.Provider) => ThemeStyle.Provider;
-
 }
 
 /**
  * Context entry containing theme styles.
  */
 export const ThemeStyle: CxEntry<ThemeStyle.ById, ThemeStyle> = {
-  perContext: (/*#__PURE__*/ cxDefaultScoped(
-      BootstrapContext,
-      (/*#__PURE__*/ cxDynamic<ThemeStyle.ById, ThemeStyle, ThemeStyle.ById>({
-        create: ThemeStyle$create,
-        byDefault: _target => asis,
-        assign: ({ get, to }, _target) => {
+  perContext: /*#__PURE__*/ cxDefaultScoped(
+    BootstrapContext,
+    /*#__PURE__*/ cxDynamic<ThemeStyle.ById, ThemeStyle, ThemeStyle.ById>({
+      create: ThemeStyle$create,
+      byDefault: _target => asis,
+      assign: ({ get, to }, _target) => {
+        const byId: ThemeStyle.ById = id => get()(id);
 
-          const byId: ThemeStyle.ById = id => get()(id);
-
-          return receiver => to((_, by) => receiver(byId, by));
-        },
-      })),
-  )),
+        return receiver => to((_, by) => receiver(byId, by));
+      },
+    }),
+  ),
   toString: () => '[ThemeStyle]',
 };
 
 function ThemeStyle$create(
-    styles: ThemeStyle[],
-    _target: CxEntry.Target<ThemeStyle.ById, ThemeStyle>,
+  styles: ThemeStyle[],
+  _target: CxEntry.Target<ThemeStyle.ById, ThemeStyle>,
 ): ThemeStyle.ById {
-
   const providers = new Map<ThemeStyle.Provider, [ThemeStyle.Provider, boolean]>();
 
   for (const style of styles) {
-
     let key: ThemeStyle.Provider;
     let provider: ThemeStyle.Provider;
     let isId: boolean;
@@ -116,23 +109,20 @@ function ThemeStyle$create(
     if (!prev) {
       providers.set(key, [provider, isId]);
     } else {
-
       const [prevProvider, hasId] = prev;
 
-      providers.set(
-          key,
-          [
-            isId ? ThemeStyle$combine(provider, prevProvider) : ThemeStyle$combine(prevProvider, provider),
-            isId || hasId,
-          ],
-      );
+      providers.set(key, [
+        isId
+          ? ThemeStyle$combine(provider, prevProvider)
+          : ThemeStyle$combine(prevProvider, provider),
+        isId || hasId,
+      ]);
     }
   }
 
   return byId;
 
   function byId(id: ThemeStyle.Provider): ThemeStyle.Provider {
-
     const existing = providers.get(id);
 
     if (!existing) {
@@ -145,6 +135,9 @@ function ThemeStyle$create(
   }
 }
 
-function ThemeStyle$combine(first: ThemeStyle.Provider, second: ThemeStyle.Provider): ThemeStyle.Provider {
+function ThemeStyle$combine(
+  first: ThemeStyle.Provider,
+  second: ThemeStyle.Provider,
+): ThemeStyle.Provider {
   return theme => stypRules(first(theme), second(theme));
 }

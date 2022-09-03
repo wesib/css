@@ -29,12 +29,12 @@ export class ComponentStypDomFormat extends ComponentStypFormat {
    * @param when - When to start style rendering. `settled` by default.
    */
   constructor(
-      readonly context: ComponentContext,
-      {
-        when = 'settled',
-      }: {
-        readonly when?: 'settled' | 'connected' | undefined;
-      } = {},
+    readonly context: ComponentContext,
+    {
+      when = 'settled',
+    }: {
+      readonly when?: 'settled' | 'connected' | undefined;
+    } = {},
   ) {
     super();
     this.when = when;
@@ -53,9 +53,7 @@ export class ComponentStypDomFormat extends ComponentStypFormat {
    *
    * @returns Configuration of DOM style production format.
    */
-  config(
-      config?: ComponentStypFormatConfig & StypDomFormatConfig,
-  ): StypDomFormatConfig {
+  config(config?: ComponentStypFormatConfig & StypDomFormatConfig): StypDomFormatConfig {
     return componentStypDomFormatConfig(this, config, { when: this.when });
   }
 

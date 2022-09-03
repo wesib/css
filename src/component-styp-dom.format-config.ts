@@ -19,11 +19,10 @@ import { ComponentStypFormat, ComponentStypFormatConfig } from './component-styp
  * @returns Configuration of DOM style production format.
  */
 export function componentStypDomFormatConfig(
-    format: ComponentStypFormat,
-    config: ComponentStypFormatConfig & StypDomFormatConfig = {},
-    render?: RenderDef,
+  format: ComponentStypFormat,
+  config: ComponentStypFormatConfig & StypDomFormatConfig = {},
+  render?: RenderDef,
 ): StypDomFormatConfig {
-
   const { context } = format;
 
   return {
@@ -41,10 +40,9 @@ export function componentStypDomFormatConfig(
  * @internal
  */
 function defaultStypRenderScheduler(
-    context: ComponentContext,
-    render: RenderDef = {},
+  context: ComponentContext,
+  render: RenderDef = {},
 ): ComponentRenderScheduler {
-
   const scheduler = context.get(ComponentRenderScheduler);
 
   return (opts = {}) => scheduler({ ...opts, ...render });

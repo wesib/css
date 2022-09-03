@@ -1,4 +1,10 @@
-import { doqryPicker, DoqryPicker, DoqryPurePicker, DoqryPureSelector, DoqrySubPicker } from '@frontmeans/doqry';
+import {
+  doqryPicker,
+  DoqryPicker,
+  DoqryPurePicker,
+  DoqryPureSelector,
+  DoqrySubPicker,
+} from '@frontmeans/doqry';
 import { NamespaceAliaser } from '@frontmeans/namespace-aliaser';
 import { RenderScheduler } from '@frontmeans/render-scheduler';
 import {
@@ -11,7 +17,12 @@ import {
   StypRules,
 } from '@frontmeans/style-producer';
 import { CxEntry, cxSingle } from '@proc7ts/context-values';
-import { elementOrArray, extendSetOfElements, setOfElements, valueProvider } from '@proc7ts/primitives';
+import {
+  elementOrArray,
+  extendSetOfElements,
+  setOfElements,
+  valueProvider,
+} from '@proc7ts/primitives';
 import { Supply } from '@proc7ts/supply';
 import { ComponentContext, ShadowContentRoot } from '@wesib/wesib';
 import { ComponentStyleProducer } from './component-style-producer';
@@ -27,7 +38,6 @@ import { ElementIdClass } from './element-id-class.impl';
  * [@frontmeans/style-producer]: https://www.npmjs.com/package/@frontmeans/style-producer
  */
 export interface ComponentStypFormatConfig extends StypFormatConfig {
-
   /**
    * Structured CSS selector to use for custom element's host.
    *
@@ -73,14 +83,15 @@ export interface ComponentStypFormatConfig extends StypFormatConfig {
    * Default `NamespaceAliaser` used when omitted.
    */
   readonly nsAlias?: NamespaceAliaser | undefined;
-
 }
 
-const ComponentStypFormat$perContext: CxEntry.Definer<ComponentStypFormat> = (/*#__PURE__*/ cxSingle({
-  byDefault(context) {
-    return new ComponentStypObjectFormat(context.get(ComponentContext));
+const ComponentStypFormat$perContext: CxEntry.Definer<ComponentStypFormat> = /*#__PURE__*/ cxSingle(
+  {
+    byDefault(context) {
+      return new ComponentStypObjectFormat(context.get(ComponentContext));
+    },
   },
-}));
+);
 
 /**
  * Component style production format.
@@ -93,7 +104,9 @@ const ComponentStypFormat$perContext: CxEntry.Definer<ComponentStypFormat> = (/*
  */
 export abstract class ComponentStypFormat {
 
-  static perContext(target: CxEntry.Target<ComponentStypFormat>): CxEntry.Definition<ComponentStypFormat> {
+  static perContext(
+    target: CxEntry.Target<ComponentStypFormat>,
+  ): CxEntry.Definition<ComponentStypFormat> {
     return ComponentStypFormat$perContext(target);
   }
 
@@ -116,11 +129,7 @@ export abstract class ComponentStypFormat {
    *
    * @returns CSS rules supply. Once cut off the produced stylesheets are removed.
    */
-  produce(
-      rules: StypRules.Source,
-      config?: ComponentStypFormatConfig,
-  ): Supply {
-
+  produce(rules: StypRules.Source, config?: ComponentStypFormatConfig): Supply {
     const producer = this.newProducer(rules, config);
     const supply = new Supply();
 
@@ -139,17 +148,12 @@ export abstract class ComponentStypFormat {
    *
    * @returns CSS rules producer function returning CSS rules supply. Once cut off the produced stylesheets are removed.
    */
-  newProducer(
-      rules: StypRules.Source,
-      config?: ComponentStypFormatConfig,
-  ): (this: void) => Supply {
-
+  newProducer(rules: StypRules.Source, config?: ComponentStypFormatConfig): (this: void) => Supply {
     const css = lazyStypRules(rules);
     let producer: () => Supply;
     const componentSupply = this.context.supply;
 
     producer = () => {
-
       const produceStyle = this.context.get(ComponentStyleProducer);
 
       return produceStyle(css, this.format(config)).needs(componentSupply);
@@ -186,42 +190,38 @@ export abstract class ComponentStypFormat {
    *
    * @returns Component style renderer(s).
    */
-  renderer(
-      config: ComponentStypFormatConfig,
-  ): StypRenderer | readonly StypRenderer[] | undefined {
-
+  renderer(config: ComponentStypFormatConfig): StypRenderer | readonly StypRenderer[] | undefined {
     const shadowRoot = this.context.get(ShadowContentRoot, { or: null });
     const { renderer } = config;
     const renderers = extendSetOfElements(
-        setOfElements<StypRenderer>(renderer),
-        this.context.get(ComponentStypRenderer),
+      setOfElements<StypRenderer>(renderer),
+      this.context.get(ComponentStypRenderer),
     );
 
     const hostSelector = config.hostSelector
-        ? doqryPicker(config.hostSelector)[0] as DoqryPurePicker.Part
-        : undefined;
+      ? (doqryPicker(config.hostSelector)[0] as DoqryPurePicker.Part)
+      : undefined;
 
-    renderers.add(shadowRoot
+    renderers.add(
+      shadowRoot
         ? shadowRenderer(hostSelector)
-        : noShadowRenderer(hostSelector || { c: [this.context.get(ElementIdClass)] }));
+        : noShadowRenderer(hostSelector || { c: [this.context.get(ElementIdClass)] }),
+    );
 
     return elementOrArray(renderers);
   }
 
 }
 
-
 function shadowRenderer(hostSelector: DoqryPurePicker.Part | undefined): StypRenderer {
   return {
     order: -100,
     render(producer, properties) {
-
       let { selector } = producer;
 
       if (!selector.length) {
         selector = [hostSelector || { u: [[':', 'host']] }];
       } else if (hostSelector) {
-
         const [rest, host] = extractHostSelector(selector);
 
         if (host) {
@@ -242,13 +242,11 @@ function noShadowRenderer(hostSelector: DoqryPurePicker.Part): StypRenderer {
   return {
     order: -100,
     render(producer, properties) {
-
       let { selector } = producer;
 
       if (!selector.length) {
         selector = [hostSelector];
       } else {
-
         const [rest, host] = extractHostSelector(selector);
 
         if (host && host.length) {
@@ -263,19 +261,14 @@ function noShadowRenderer(hostSelector: DoqryPurePicker.Part): StypRenderer {
   };
 }
 
-function extractHostSelector(
-    selector: DoqryPicker,
-): [DoqryPicker, DoqryPicker?] {
+function extractHostSelector(selector: DoqryPicker): [DoqryPicker, DoqryPicker?] {
   if (typeof selector[0] !== 'string') {
-
     const [{ ns, e, i, c, u, s, $ }, ...restParts] = selector;
 
     if (!ns && !e && !i && !c && !s && u) {
-
       const [[prefix, name, ...params]] = u;
 
       if (prefix === ':' && name === 'host') {
-
         let host: DoqryPicker.Mutable;
 
         if (params.length) {
@@ -294,17 +287,9 @@ function extractHostSelector(
 }
 
 function extendHostSelector(
-    selector: DoqryPicker,
-    {
-      ns,
-      e,
-      i,
-      c,
-      u,
-      s,
-    }: DoqryPurePicker.Part,
+  selector: DoqryPicker,
+  { ns, e, i, c, u, s }: DoqryPurePicker.Part,
 ): DoqryPicker {
-
   const [first, ...rest] = selector as [DoqryPicker.Part, ...DoqryPicker];
 
   return [
@@ -312,9 +297,9 @@ function extendHostSelector(
       ns: first.e || first.ns ? first.ns : ns,
       e: first.e || first.ns ? first.e : e,
       i: first.i || i,
-      c: first.c ? (c ? [...first.c, ...c] : first.c) as typeof c : c,
-      u: first.u ? (u ? [...first.u, ...u] : first.u) as typeof u : u,
-      s: ((first.s || '') + (s || '')) || undefined,
+      c: first.c ? ((c ? [...first.c, ...c] : first.c) as typeof c) : c,
+      u: first.u ? ((u ? [...first.u, ...u] : first.u) as typeof u) : u,
+      s: (first.s || '') + (s || '') || undefined,
       $: first.$,
     },
     ...rest,

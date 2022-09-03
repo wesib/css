@@ -9,7 +9,10 @@ export type ComponentStypRenderer = StypRenderer;
 /**
  * Component context entry containing component CSS renderers.
  */
-export const ComponentStypRenderer: CxEntry<readonly ComponentStypRenderer[], ComponentStypRenderer> = {
-  perContext: (/*#__PURE__*/ cxArray()),
+export const ComponentStypRenderer: CxEntry<
+  readonly ComponentStypRenderer[],
+  ComponentStypRenderer
+> = {
+  perContext: /*#__PURE__*/ cxArray(),
   toString: () => '[ComponentStypRenderer]',
 };
