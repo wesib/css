@@ -1,4 +1,4 @@
-import { immediateRenderScheduler, RenderScheduler } from '@frontmeans/render-scheduler';
+import { immediateRenderScheduler } from '@frontmeans/render-scheduler';
 import { StypRenderer } from '@frontmeans/style-producer';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { CxBuilder, cxConstAsset } from '@proc7ts/context-builder';
@@ -12,7 +12,7 @@ import { ComponentStypFormat } from './component-styp-format';
 describe('componentStypDomFormatConfig', () => {
   let context: ComponentContext;
   let format: ComponentStypFormat;
-  let scheduler: Mock<RenderScheduler>;
+  let scheduler: Mock<ComponentRenderScheduler>;
 
   beforeEach(() => {
     const cxBuilder = new CxBuilder<ComponentContext>(

@@ -1,6 +1,12 @@
 import { doqryText } from '@frontmeans/doqry';
 import { immediateRenderScheduler, RenderScheduler } from '@frontmeans/render-scheduler';
-import { StypProperties, StypRenderer, stypRoot, StypRules } from '@frontmeans/style-producer';
+import {
+  StyleProducer,
+  StypProperties,
+  StypRenderer,
+  stypRoot,
+  StypRules,
+} from '@frontmeans/style-producer';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { cxBuildAsset, cxConstAsset } from '@proc7ts/context-builder';
 import { trackValue } from '@proc7ts/fun-events';
@@ -55,7 +61,9 @@ describe('@ProduceStyle', () => {
       },
     });
     expect(cssStyle().display).toBe('block');
-    expect(mockRenderer).toHaveBeenCalledWith(expect.anything(), { display: 'block' });
+    expect(mockRenderer).toHaveBeenCalledWith(expect.anything() as unknown as StyleProducer, {
+      display: 'block',
+    });
   });
   it('renders styles using DOM format', async () => {
     let produceSpy!: SpyInstance<ComponentStypFormat['produce']>;
