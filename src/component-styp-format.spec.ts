@@ -109,25 +109,23 @@ describe('ComponentStypDomFormat', () => {
   describe('config', () => {
     describe('document', () => {
       it('defaults to component document', () => {
-        expect(format.config()).toMatchObject({ document: nodeDocument(context.element as Node) });
+        expect(format.config().document).toBe(nodeDocument(context.element as Node));
       });
       it('respects explicit value', () => {
         const doc = document.implementation.createHTMLDocument('test');
 
-        expect(format.config({ document: doc })).toMatchObject({ document: doc });
+        expect(format.config({ document: doc }).document).toBe(doc);
       });
     });
 
     describe('parent', () => {
       it('defaults to component content root', () => {
-        expect(format.config()).toMatchObject({ parent: context.contentRoot });
+        expect(format.config().parent).toBe(context.contentRoot);
       });
       it('respects explicit value', () => {
         const parent = document.createElement('content-parent');
 
-        expect(format.config({ parent })).toMatchObject(
-          parent as unknown as Record<string, unknown>,
-        );
+        expect(format.config({ parent }).parent).toBe(parent);
       });
     });
 
