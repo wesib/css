@@ -23,6 +23,7 @@
     "types": "./dist/wesib-css.d.ts",
     "default": "./dist/wesib-css.js"
   },
+  "sideEffects": false,
   "peerDependencies": {
     "@frontmeans/style-producer": "^7.0.1",
     "@proc7ts/fun-events": "^10.5.2",
